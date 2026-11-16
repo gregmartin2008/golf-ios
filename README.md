@@ -21,7 +21,7 @@ tests is made up.
   pressing on the map. Linking a course to GHIN brings in its official tees, ratings, slopes,
   pars, stroke indexes and yardages.
 - **Playing.** The hole fills the top of the screen, tee at the bottom, green at the top. Tap
-  **Mark ball here** at your ball, or long-press the map where it finished. Caddie works out the
+  **Mark ball** at your ball, or long-press the map where it finished. Caddie works out the
   lie from the course map (fairway, rough, bunker, green) and you can change it. Tap anywhere to
   measure to that point and from there to the green. Penalties are one tap. On the green, enter
   each putt's length. A hole can also be typed in quickly without the map.

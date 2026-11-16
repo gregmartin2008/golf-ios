@@ -21,7 +21,7 @@ public enum DemoData {
         mutating func chance(_ p: Double) -> Bool { next() < p }
     }
 
-    static let origin = Coordinate(lat: 39.5000, lon: -98.3500)
+    static let origin = Coordinate(lat: 38.5000, lon: -98.8000)
     static let pars = [4, 5, 3, 4, 4, 3, 5, 4, 4, 4, 3, 5, 4, 4, 5, 3, 4, 4]
     static let indexes = [7, 3, 15, 1, 11, 17, 5, 9, 13, 8, 16, 2, 10, 6, 4, 18, 12, 14]
     static let blueYards = [395, 530, 175, 430, 380, 160, 545, 405, 370, 400, 185, 555, 390, 415, 520, 150, 385, 410]
@@ -121,12 +121,12 @@ public enum DemoData {
             let carry: Double
             if remaining <= reach + 5 {
                 // Going for the green: finish near it, sometimes on it.
-                let spread = remaining < 30 ? 4.0 : max(6.0, remaining * 0.085)
+                let spread = remaining < 30 ? 6.0 : max(8.0, remaining * 0.12)
                 carry = remaining + g.range(-spread, spread)
             } else {
                 carry = reach * g.range(0.9, 1.03)
             }
-            let offline = g.range(-1, 1) * (remaining < 30 ? 3.0 : carry * 0.085)
+            let offline = g.range(-1, 1) * (remaining < 30 ? 5.0 : carry * 0.13)
             let forward = Geo.destination(from: position, bearingDegrees: Geo.bearing(position, green),
                                           meters: carry / Geo.yardsPerMeter)
             position = Geo.destination(from: forward, bearingDegrees: heading + 90, meters: offline / Geo.yardsPerMeter)
@@ -153,9 +153,9 @@ public enum DemoData {
         while putts.count < 4 {
             let length = (feet * 2).rounded() / 2
             putts.append(Putt(feet: max(1, length)))
-            let holeChance = feet <= 3 ? 0.97 : (feet <= 6 ? 0.6 : (feet <= 12 ? 0.28 : (feet <= 25 ? 0.1 : 0.03)))
+            let holeChance = feet <= 3 ? 0.93 : (feet <= 6 ? 0.5 : (feet <= 12 ? 0.2 : (feet <= 25 ? 0.07 : 0.02)))
             if g.chance(holeChance) { break }
-            feet = max(1, feet * g.range(0.06, 0.22))
+            feet = max(1, feet * g.range(0.08, 0.3))
         }
         score.putts = putts
         return score

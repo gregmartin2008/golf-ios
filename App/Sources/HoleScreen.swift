@@ -325,7 +325,8 @@ struct HoleScreen: View {
             Button {
                 markHere()
             } label: {
-                Label("Mark ball here", systemImage: "location.fill")
+                Label("Mark ball", systemImage: "location.fill")
+                    .lineLimit(1)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
@@ -337,6 +338,7 @@ struct HoleScreen: View {
                 }
             } label: {
                 Label(score.marks.last?.club ?? "Club", systemImage: "figure.golf")
+                    .lineLimit(1)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.bordered)

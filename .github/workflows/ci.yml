@@ -17,7 +17,7 @@ jobs:
   core:
     name: Core logic
     runs-on: macos-26
-    timeout-minutes: 25
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - name: Unit tests
@@ -30,22 +30,35 @@ jobs:
           tail -30 ../../out/core-tests.log | cut -c1-300 > ../../out/core-tail.log
           cat ../../out/core-summary.log
           grep -q "with 0 failures" ../../out/core-tests.log && ! grep -q "error:" ../../out/core-tests.log
-      - name: Import two real courses from OpenStreetMap
-        if: success() || failure()
-        continue-on-error: true
+      - name: Publish results
+        if: always()
+        run: scripts/ci_publish.sh out ci-core
+
+  map:
+    name: Live course import check
+    runs-on: macos-26
+    timeout-minutes: 20
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Import three real courses from OpenStreetMap
+        timeout-minutes: 14
         run: |
+          mkdir -p out
           cd Packages/CaddieCore
           swift build -c release --product caddie-check > ../../out/check-build.log 2>&1 || true
           test -x .build/release/caddie-check || exit 0
           # Famous public courses, used only to prove the importer against live map data.
           .build/release/caddie-check 40.7449 -73.4543 "Bethpage" 2>&1 | tee ../../out/osm-bethpage.log | tail -30 || true
           .build/release/caddie-check 36.5686 -121.9505 "Pebble Beach" 2>&1 | tee ../../out/osm-pebble.log | tail -30 || true
+          .build/release/caddie-check 40.5262 -79.8272 "Oakmont" 2>&1 | tee ../../out/osm-oakmont.log | tail -30 || true
       - name: Publish results
         if: always()
-        run: scripts/ci_publish.sh out ci-core
+        run: scripts/ci_publish.sh out ci-map
 
   app:
     name: iPhone app
+    needs: core
     runs-on: macos-26
     timeout-minutes: 60
     steps:
