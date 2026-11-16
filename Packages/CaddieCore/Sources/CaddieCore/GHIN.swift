@@ -47,7 +47,7 @@ public struct GHINGolfer: Equatable {
 }
 
 /// What will be sent when a round is posted. Shown to the golfer before anything is sent.
-public struct GHINPost: Equatable {
+public struct GHINPost: Equatable, Identifiable {
     public var golferID: Int
     public var courseID: Int
     public var teeSetID: Int
@@ -79,6 +79,8 @@ public struct GHINPost: Equatable {
     }
 
     public var total: Int { holes.reduce(0) { $0 + $1.strokes } }
+
+    public var id: String { "\(golferID)-\(courseID)-\(teeSetID)-\(GHINFormat.day(playedAt))-\(total)" }
 }
 
 public enum GHINFormat {

@@ -80,6 +80,20 @@ final class OSMImportTests: XCTestCase {
         XCTAssertTrue(OSMImport.candidates(from: Data("not json".utf8), near: TestHole.tee).isEmpty)
     }
 
+    func testHoleNumbers() {
+        XCTAssertEqual(OSMImport.holeNumber("7"), 7)
+        XCTAssertEqual(OSMImport.holeNumber("07"), 7)
+        XCTAssertEqual(OSMImport.holeNumber("B12"), 12)
+        XCTAssertEqual(OSMImport.holeNumber(" 3 "), 3)
+        XCTAssertNil(OSMImport.holeNumber("Black"))
+        XCTAssertNil(OSMImport.holeNumber(nil))
+        XCTAssertNil(OSMImport.holeNumber("0"))
+        let tally = OSMImport.tally(from: OSMImportTests.reply())
+        XCTAssertEqual(tally.counts["hole"], 1)
+        XCTAssertEqual(tally.counts["bunker"], 2)
+        XCTAssertEqual(tally.holeRefs, ["1"])
+    }
+
     func testQueryMentionsThePoint() {
         let query = OSMImport.query(near: Coordinate(lat: 40.5, lon: -80.25), radiusMeters: 3000)
         XCTAssertTrue(query.contains("around:3000,40.5,-80.25"))
@@ -88,9 +102,13 @@ final class OSMImportTests: XCTestCase {
 
     func testClientFallsBackToSecondServer() async throws {
         let good = String(data: OSMImportTests.reply(), encoding: .utf8) ?? ""
-        let transport = ScriptedTransport([("busy", 504), (good, 200)])
-        let data = try await OverpassClient(transport: transport).fetch(near: TestHole.tee)
-        XCTAssertEqual(transport.requests.count, 2)
+        // The outline step fails on the first server and succeeds on the second; then the feature step.
+        let transport = ScriptedTransport([("busy", 504), (good, 200), (good, 200)])
+        let data = try await OverpassClient(transport: transport).fetch(near: TestHole.at(north: 200))
+        XCTAssertEqual(transport.requests.count, 3)
+        let second = String(data: transport.requests[2].httpBody ?? Data(), encoding: .utf8) ?? ""
+        XCTAssertTrue(second.contains("golf"))
+        XCTAssertEqual(OSMImport.course(from: data, near: TestHole.at(north: 200)).coverage.holesFound, 1)
         XCTAssertEqual(OSMImport.candidates(from: data, near: TestHole.tee).first?.name, "Fixture Golf Club")
         let body = String(data: transport.requests[0].httpBody ?? Data(), encoding: .utf8) ?? ""
         XCTAssertTrue(body.hasPrefix("data=%5Bout%3Ajson%5D"))

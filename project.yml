@@ -34,9 +34,7 @@ targets:
         UILaunchScreen: {}
         UIRequiredDeviceCapabilities: [arm64]
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
-        UIBackgroundModes: [location]
         NSLocationWhenInUseUsageDescription: Caddie uses your location on the course to show yardages and to mark where each shot finished.
-        NSLocationAlwaysAndWhenInUseUsageDescription: Caddie uses your location on the course to show yardages and to mark where each shot finished.
         ITSAppUsesNonExemptEncryption: false
     settings:
       base:

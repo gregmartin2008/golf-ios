@@ -16,6 +16,9 @@ do {
     let started = Date()
     let data = try await OverpassClient().fetch(near: point)
     let seconds = Date().timeIntervalSince(started)
+    let tally = OSMImport.tally(from: data)
+    print("map contains: " + tally.counts.sorted { $0.key < $1.key }.map { "\($0.value) \($0.key)" }.joined(separator: ", "))
+    print("hole numbers on the map: " + tally.holeRefs.prefix(40).joined(separator: " "))
     let options = OSMImport.candidates(from: data, near: point)
     print("reply: \(data.count) bytes in \(String(format: "%.1f", seconds)) s; \(options.count) course outlines nearby")
     for option in options.prefix(5) {

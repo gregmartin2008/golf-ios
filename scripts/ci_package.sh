@@ -12,7 +12,7 @@ cp -R "$app" build/ipa/Payload/
   echo "sha256: $(shasum -a 256 build/ipa/Caddie.ipa | cut -d' ' -f1)"
   echo "commit: ${GITHUB_SHA:-local}"
   echo "architectures: $(lipo -archs "$app/Caddie")"
-  /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" -c "Print :MinimumOSVersion" -c "Print :UIBackgroundModes" \
+  /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" -c "Print :MinimumOSVersion" \
     -c "Print :NSLocationWhenInUseUsageDescription" "$app/Info.plist"
 } | tee out/ipa.txt
 

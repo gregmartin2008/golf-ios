@@ -57,7 +57,7 @@ public enum OSMImport {
     public static func query(near point: Coordinate, radiusMeters radius: Int = OSMImport.radiusMeters) -> String {
         let around = "(around:\(radius),\(point.lat),\(point.lon))"
         return """
-        [out:json][timeout:40];
+        [out:json][timeout:60];
         (
           nwr["leisure"="golf_course"]\(around);
           way["golf"="hole"]\(around);
@@ -66,6 +66,65 @@ public enum OSMImport {
         );
         out tags geom;
         """
+    }
+
+    /// The Overpass query for golf course outlines near a point. Small and quick.
+    public static func outlineQuery(near point: Coordinate, radiusMeters radius: Int = OSMImport.radiusMeters) -> String {
+        """
+        [out:json][timeout:60];
+        nwr["leisure"="golf_course"](around:\(radius),\(point.lat),\(point.lon));
+        out tags geom;
+        """
+    }
+
+    /// The Overpass query for the holes and outlines inside a box (south, west, north, east).
+    public static func featureQuery(south: Double, west: Double, north: Double, east: Double) -> String {
+        let box = "(\(south),\(west),\(north),\(east))"
+        return """
+        [out:json][timeout:60];
+        (
+          way["golf"="hole"]\(box);
+          nwr["golf"~"^(tee|fairway|green|bunker|water_hazard|lateral_water_hazard|rough)$"]\(box);
+          way["natural"="water"]\(box);
+        );
+        out tags geom;
+        """
+    }
+
+    /// Joins two Overpass replies into one.
+    public static func merge(_ first: Data, _ second: Data) -> Data {
+        let a = (JSON.object(first)?["elements"] as? [Any]) ?? []
+        let b = (JSON.object(second)?["elements"] as? [Any]) ?? []
+        return (try? JSONSerialization.data(withJSONObject: ["elements": a + b])) ?? first
+    }
+
+    /// What a reply contains, for checking coverage: how many of each golf feature, and the
+    /// numbers the hole lines carry.
+    public static func tally(from data: Data) -> (counts: [String: Int], holeRefs: [String]) {
+        var counts: [String: Int] = [:]
+        var refs: [String] = []
+        for element in elements(from: data) {
+            if let golf = element.tags["golf"] {
+                counts[golf, default: 0] += 1
+                if golf == "hole" { refs.append(element.tags["ref"] ?? "(none)") }
+            } else if element.tags["leisure"] == "golf_course" {
+                counts["course outline", default: 0] += 1
+            } else if element.tags["natural"] == "water" {
+                counts["water", default: 0] += 1
+            }
+        }
+        return (counts, refs)
+    }
+
+    /// The hole number in a `ref` tag: "7", "07", or a prefixed form such as "B7".
+    static func holeNumber(_ ref: String?) -> Int? {
+        guard let ref = ref else { return nil }
+        var digits = ""
+        for character in ref.reversed() {
+            if character.isNumber { digits.insert(character, at: digits.startIndex) } else if !digits.isEmpty { break }
+        }
+        guard let number = Int(digits), number >= 1, number <= 27 else { return nil }
+        return number
     }
 
     struct Element {
@@ -202,8 +261,8 @@ public enum OSMImport {
         // Holes.
         var holeLines: [Int: (line: [Coordinate], par: Int?, index: Int?)] = [:]
         for element in all where element.tags["golf"] == "hole" {
-            guard let line = element.rings.first, line.count >= 2, let ref = element.tags["ref"],
-                  let number = Int(ref.trimmingCharacters(in: .whitespaces)), number >= 1, number <= 27 else { continue }
+            guard let line = element.rings.first, line.count >= 2,
+                  let number = holeNumber(element.tags["ref"]) else { continue }
             guard let middle = Geo.center(line), onCourse(middle) else { continue }
             if holeLines[number] != nil { continue }
             holeLines[number] = (line, element.tags["par"].flatMap { Int($0) }, element.tags["handicap"].flatMap { Int($0) })
@@ -320,13 +379,34 @@ public struct OverpassClient {
 
     let transport: HTTPTransport
 
-    public init(transport: HTTPTransport = URLSessionTransport(timeout: 60)) {
+    public init(transport: HTTPTransport = URLSessionTransport(timeout: 90)) {
         self.transport = transport
     }
 
-    /// The raw reply for everything golf-related near `point`. Tries each server in turn.
-    public func fetch(near point: Coordinate, radiusMeters: Int = OSMImport.radiusMeters) async throws -> Data {
-        let query = OSMImport.query(near: point, radiusMeters: radiusMeters)
+    /// Golf course outlines near a point: the quick first step, also used for "courses near me".
+    public func fetchOutlines(near point: Coordinate, radiusMeters: Int = OSMImport.radiusMeters) async throws -> Data {
+        try await run(OSMImport.outlineQuery(near: point, radiusMeters: radiusMeters))
+    }
+
+    /// Everything needed to build the course at `point`: its outline, then the holes and shapes
+    /// inside that outline. Asking in two steps keeps each reply small, which matters in built-up
+    /// areas where one wide query is slow.
+    public func fetch(near point: Coordinate, candidateID: String? = nil) async throws -> Data {
+        let outlines = try await fetchOutlines(near: point)
+        let options = OSMImport.candidates(from: outlines, near: point)
+        let chosen = options.first { $0.id == candidateID } ?? options.first
+        guard let boundary = chosen?.boundary, let box = Geo.bounds(boundary) else {
+            // No course outline on the map: take whatever golf features are close by.
+            return try await run(OSMImport.query(near: point, radiusMeters: 1500))
+        }
+        let margin = 0.0006
+        let features = try await run(OSMImport.featureQuery(south: box.south - margin, west: box.west - margin,
+                                                            north: box.north + margin, east: box.east + margin))
+        return OSMImport.merge(outlines, features)
+    }
+
+    /// Sends one query, trying each server in turn.
+    func run(_ query: String) async throws -> Data {
         var lastError: Error = HTTPError(status: 0, message: "The map service could not be reached.")
         for server in OverpassClient.servers {
             guard let url = URL(string: server) else { continue }
