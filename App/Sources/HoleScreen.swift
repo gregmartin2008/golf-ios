@@ -87,6 +87,7 @@ struct HoleScreen: View {
                     }
                 }
             }
+            .modifier(NoticeLayer())
         }
         .onChange(of: showSummary) { _, showing in
             // The summary can finish or change the round; pick up what it saved.
@@ -467,7 +468,10 @@ struct HoleScreen: View {
         guard let position = round.holes[index].marks.firstIndex(where: { $0.id == mark.id }) else { return }
         round.holes[index].marks[position] = mark
         save()
-        if mark.lie == .green && round.holes[index].putts.isEmpty { showPutts = true }
+        if mark.lie == .green && round.holes[index].putts.isEmpty {
+            // Wait for the mark sheet to close before opening the putting sheet.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { showPutts = true }
+        }
     }
 
     private func remove(_ mark: BallMark) {

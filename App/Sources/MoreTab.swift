@@ -78,6 +78,8 @@ struct MoreTab: View {
             }
             .navigationTitle("More")
             .onAppear {
+                // A backup made earlier in the session would be missing anything played since.
+                backupURL = nil
                 if let value = model.settings.manualIndex { manualIndex = String(format: "%.1f", value) }
             }
             .fileImporter(isPresented: $importing, allowedContentTypes: [.json]) { result in

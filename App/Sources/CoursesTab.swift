@@ -529,6 +529,7 @@ struct GHINLinkView: View {
                 }
             }
         }
+        .modifier(NoticeLayer())
     }
 }
 

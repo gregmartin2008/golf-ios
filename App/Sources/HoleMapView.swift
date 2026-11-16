@@ -157,14 +157,14 @@ struct HoleMapView: UIViewRepresentable {
         }
 
         @objc func tapped(_ recognizer: UITapGestureRecognizer) {
-            guard recognizer.state == .ended, let coordinate = coordinate(of: recognizer) else { return }
-            parent.onTap(coordinate)
+            guard recognizer.state == .ended, let point = self.coordinate(of: recognizer) else { return }
+            parent.onTap(point)
         }
 
         @objc func pressed(_ recognizer: UILongPressGestureRecognizer) {
-            guard recognizer.state == .began, let coordinate = coordinate(of: recognizer) else { return }
+            guard recognizer.state == .began, let point = self.coordinate(of: recognizer) else { return }
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-            parent.onLongPress(coordinate)
+            parent.onLongPress(point)
         }
 
         // Touches on a pin belong to the pin (select, drag), not to the map's tap and long press.

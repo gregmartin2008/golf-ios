@@ -44,7 +44,7 @@ struct PlayTab: View {
             }
             .navigationTitle("Caddie")
             .navigationDestination(for: UUID.self) { id in
-                if let round = model.round(id) {
+                if let round = model.round(id), !round.holes.isEmpty {
                     HoleScreen(round: round)
                 } else {
                     Text("This round is no longer here.")
@@ -218,7 +218,7 @@ struct RoundDetailView: View {
             }
         }
         .navigationDestination(isPresented: $editing) {
-            if let round = model.round(roundID) {
+            if let round = model.round(roundID), !round.holes.isEmpty {
                 HoleScreen(round: round)
             }
         }

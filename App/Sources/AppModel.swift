@@ -8,7 +8,7 @@ final class AppModel: ObservableObject {
     @Published var courses: [Course] = []
     @Published var rounds: [Round] = []
     @Published var bag: [Club] = Club.standardBag
-    @Published var settings = Settings()
+    @Published var settings = CaddieCore.Settings()
     /// A short message for the user (a failure, or a result), shown as an alert.
     @Published var notice: String?
     @Published var isBusy = false
@@ -317,7 +317,7 @@ final class AppModel: ObservableObject {
     func ghinPost(for round: Round) -> Result<GHINPost, PostProblem> {
         guard let account = settings.ghin, let golfer = account.ghinNumber else { return .failure(.notSignedIn) }
         guard round.status == .finished, round.isFullyScored else { return .failure(.notFinished) }
-        guard let course = course(round.courseID), let courseID = course.ghinCourseID else { return .failure(.courseNotLinked) }
+        guard let course = self.course(round.courseID), let courseID = course.ghinCourseID else { return .failure(.courseNotLinked) }
         guard let tee = course.tees.first(where: { $0.id == round.teeID }), let teeID = tee.ghinTeeSetID else {
             return .failure(.teeNotLinked)
         }

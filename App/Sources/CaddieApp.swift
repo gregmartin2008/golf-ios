@@ -26,27 +26,34 @@ struct RootView: View {
                 tabs(selected: 0)
             }
         }
-        .alert("Caddie", isPresented: noticeShown) {
-            Button("OK") { model.notice = nil }
-        } message: {
-            Text(model.notice ?? "")
-        }
-        .overlay {
-            if model.isBusy {
-                ProgressView()
-                    .controlSize(.large)
-                    .padding(24)
-                    .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 14))
-            }
-        }
-    }
-
-    private var noticeShown: Binding<Bool> {
-        Binding(get: { model.notice != nil }, set: { if !$0 { model.notice = nil } })
+        .modifier(NoticeLayer())
     }
 
     func tabs(selected: Int) -> some View {
         MainTabs(selection: selected)
+    }
+}
+
+/// Shows the app's notices and its busy spinner. Applied to the root and to each sheet that can
+/// raise a notice, because an alert under a sheet is not shown.
+struct NoticeLayer: ViewModifier {
+    @EnvironmentObject var model: AppModel
+
+    func body(content: Content) -> some View {
+        content
+            .alert("Caddie", isPresented: Binding(get: { model.notice != nil }, set: { if !$0 { model.notice = nil } })) {
+                Button("OK") { model.notice = nil }
+            } message: {
+                Text(model.notice ?? "")
+            }
+            .overlay {
+                if model.isBusy {
+                    ProgressView()
+                        .controlSize(.large)
+                        .padding(24)
+                        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 14))
+                }
+            }
     }
 }
 
