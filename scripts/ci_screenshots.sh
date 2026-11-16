@@ -59,6 +59,11 @@ shoot() {  # name appearance scenario wait
       fi
       sleep 3
     done
+    # Record what the app is doing, so a screen that hangs or stays blank can be diagnosed.
+    limited 25 sample "$pid" 2 -file "out/shots/$1.sample.txt" > /dev/null 2>&1 || true
+    if [ -f "out/shots/$1.sample.txt" ]; then
+      sed -n '1,140p' "out/shots/$1.sample.txt" | cut -c1-220 > "out/shots/$1.sample.short.txt"; rm -f "out/shots/$1.sample.txt"
+    fi
     if [ "$captured" = yes ]; then
       sips -Z 1434 "out/shots/$1.png" > /dev/null 2>&1
       note "ok       $1"
