@@ -127,9 +127,12 @@ public enum Geo {
     /// Average of the points; good enough as the middle of a green or bunker.
     public static func center(_ points: [Coordinate]) -> Coordinate? {
         guard !points.isEmpty else { return nil }
+        // A closed outline often repeats its first point at the end; count it once.
+        var used = points
+        if used.count > 1, let first = used.first, let last = used.last, first == last { used.removeLast() }
         var lat = 0.0, lon = 0.0
-        for p in points { lat += p.lat; lon += p.lon }
-        return Coordinate(lat: lat / Double(points.count), lon: lon / Double(points.count))
+        for p in used { lat += p.lat; lon += p.lon }
+        return Coordinate(lat: lat / Double(used.count), lon: lon / Double(used.count))
     }
 
     /// Which side of the directed line `from`→`to` the point is on: negative is left, positive is

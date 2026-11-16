@@ -1,0 +1,72 @@
+name: ci
+on:
+  push:
+    branches: [main]
+    paths-ignore: ["README.md", "docs/**"]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # Repository variable, optional: the bundle identifier to build the app with.
+  CADDIE_BUNDLE_ID: ${{ vars.CADDIE_BUNDLE_ID }}
+jobs:
+  core:
+    name: Core logic
+    runs-on: macos-26
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unit tests
+        run: |
+          mkdir -p out
+          cd Packages/CaddieCore
+          swift test > ../../out/core-tests.log 2>&1 || true
+          grep -E "error:|failed|Executed|warning: unre" ../../out/core-tests.log | sort -u | head -150 > ../../out/core-summary.log || true
+          grep -B2 -A8 "error:" ../../out/core-tests.log | head -400 > ../../out/core-errors.log || true
+          tail -30 ../../out/core-tests.log | cut -c1-300 > ../../out/core-tail.log
+          cat ../../out/core-summary.log
+          grep -q "with 0 failures" ../../out/core-tests.log && ! grep -q "error:" ../../out/core-tests.log
+      - name: Import two real courses from OpenStreetMap
+        if: success() || failure()
+        continue-on-error: true
+        run: |
+          cd Packages/CaddieCore
+          swift build -c release --product caddie-check > ../../out/check-build.log 2>&1 || true
+          test -x .build/release/caddie-check || exit 0
+          # Famous public courses, used only to prove the importer against live map data.
+          .build/release/caddie-check 40.7449 -73.4543 "Bethpage" 2>&1 | tee ../../out/osm-bethpage.log | tail -30 || true
+          .build/release/caddie-check 36.5686 -121.9505 "Pebble Beach" 2>&1 | tee ../../out/osm-pebble.log | tail -30 || true
+      - name: Publish results
+        if: always()
+        run: scripts/ci_publish.sh out ci-core
+
+  app:
+    name: iPhone app
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate the Xcode project
+        run: |
+          mkdir -p out
+          brew install xcodegen > /dev/null 2>&1 || brew install xcodegen
+          xcodegen generate 2>&1 | tee out/xcodegen.log
+      - name: Build for the simulator
+        run: scripts/ci_xcodebuild.sh sim
+      - name: Build for iPhone
+        run: scripts/ci_xcodebuild.sh device
+      - name: Package the app
+        run: scripts/ci_package.sh
+      - name: Photograph every screen
+        timeout-minutes: 25
+        run: scripts/ci_screenshots.sh
+      - name: Publish the installable app
+        # Only after everything above has passed.
+        run: scripts/ci_package.sh --release
+      - name: Publish results
+        if: always()
+        run: scripts/ci_publish.sh out ci-app
