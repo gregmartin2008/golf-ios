@@ -239,6 +239,34 @@ final class GHINTests: XCTestCase {
         XCTAssertEqual(details.strokeIndexes, [3, 17])
     }
 
+    func testTeesAreKeptForTheGolfersGenderOnly() throws {
+        // GHIN lists each tee once rated for men and once for women.
+        func tee(_ id: Int, _ name: String, _ gender: String, _ rating: Double, _ slope: Int, par: Int, first: Int) -> [String: Any] {
+            ["TeeSetRatingId": id, "TeeSetRatingName": name, "Gender": gender, "TotalPar": par,
+             "Ratings": [["RatingType": "Total", "CourseRating": rating, "SlopeRating": slope]],
+             "Holes": [["Number": 1, "Par": par - 3, "Allocation": gender == "Male" ? 14 : 10, "Length": first],
+                       ["Number": 2, "Par": 3, "Allocation": gender == "Male" ? 8 : 12, "Length": 150]]]
+        }
+        let root: [String: Any] = ["CourseId": 9, "CourseName": "Fixture", "TeeSets": [
+            tee(1, "White", "Female", 73.1, 129, par: 8, first: 311), tee(2, "White", "Male", 67.4, 123, par: 7, first: 311),
+            tee(3, "Blue", "Male", 70.1, 129, par: 7, first: 338), tee(4, "Blue", "Female", 75.9, 136, par: 8, first: 338),
+        ]]
+        let data = try JSONSerialization.data(withJSONObject: root)
+        let men = try XCTUnwrap(GHINWire.courseDetails(from: data, gender: "M"))
+        XCTAssertEqual(men.tees.map { $0.name }, ["Blue", "White"])
+        XCTAssertEqual(men.tees.map { $0.rating }, [70.1, 67.4])
+        XCTAssertEqual(men.pars, [4, 3])
+        XCTAssertEqual(men.strokeIndexes, [14, 8])
+        let women = try XCTUnwrap(GHINWire.courseDetails(from: data, gender: "F"))
+        XCTAssertEqual(women.tees.map { $0.rating }, [75.9, 73.1])
+        XCTAssertEqual(women.pars, [5, 3])
+        XCTAssertEqual(women.strokeIndexes, [10, 12])
+        XCTAssertEqual(try XCTUnwrap(GHINWire.courseDetails(from: data)).tees.count, 4)
+        XCTAssertTrue(GHINWire.matches(teeGender: "Male", golfer: "M"))
+        XCTAssertFalse(GHINWire.matches(teeGender: "Female", golfer: "M"))
+        XCTAssertTrue(GHINWire.matches(teeGender: nil, golfer: "M"))
+    }
+
     func testPostBody() {
         let date = GHINFormat.date("2026-06-01") ?? Date()
         let post = GHINPost(golferID: 7654321, courseID: 4242, teeSetID: 77, playedAt: date, holeCount: 18,

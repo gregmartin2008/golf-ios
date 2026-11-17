@@ -44,6 +44,8 @@ public struct GHINGolfer: Equatable {
     public var handicapIndex: Double?
     public var lowIndex: Double?
     public var clubName: String?
+    /// "M" or "F" when GHIN says.
+    public var gender: String?
 }
 
 /// What will be sent when a round is posted. Shown to the golfer before anything is sent.
@@ -220,6 +222,7 @@ public enum GHINWire {
         golfer.lowIndex = GHINFormat.index(d["low_hi"]) ?? GHINFormat.index(d["low_hi_value"])
             ?? GHINFormat.index(d["low_hi_display"])
         golfer.clubName = JSON.string(d["club_name"])
+        if let text = JSON.string(d["gender"])?.uppercased().first, text == "M" || text == "F" { golfer.gender = String(text) }
         if golfer.clubName == nil, let clubs = d["clubs"] as? [[String: Any]] {
             golfer.clubName = JSON.string(clubs.first?["club_name"])
         }
@@ -263,7 +266,39 @@ public enum GHINWire {
         return result
     }
 
-    static func courseDetails(from data: Data) -> GHINCourseDetails? {
+    /// Whether a tee set's gender ("Male", "Female", "M", "F") is the golfer's ("M" or "F").
+    static func matches(teeGender: String?, golfer: String?) -> Bool {
+        guard let wanted = golfer?.trimmingCharacters(in: .whitespaces).lowercased().first else { return true }
+        guard let have = teeGender?.trimmingCharacters(in: .whitespaces).lowercased().first else { return true }
+        return wanted == have
+    }
+
+    /// Reads a course's tees. GHIN lists every tee twice, once rated for men and once for women,
+    /// with different ratings, pars and stroke indexes. Only the golfer's own are kept (all of
+    /// them when `gender` is nil or nothing matches), longest first.
+    static func courseDetails(from data: Data, gender: String? = nil) -> GHINCourseDetails? {
+        guard let all = allCourseDetails(from: data) else { return nil }
+        guard gender != nil else { return all }
+        let rows = (JSON.object(data)?["TeeSets"] as? [[String: Any]]) ?? []
+        let wanted = rows.filter { matches(teeGender: JSON.string($0["Gender"]), golfer: gender) }
+        guard !wanted.isEmpty, wanted.count < rows.count,
+              var root = JSON.object(data) else { return sorted(all) }
+        root["TeeSets"] = wanted
+        guard let trimmed = try? JSONSerialization.data(withJSONObject: root),
+              let result = allCourseDetails(from: trimmed), !result.tees.isEmpty else { return sorted(all) }
+        return sorted(result)
+    }
+
+    static func sorted(_ details: GHINCourseDetails) -> GHINCourseDetails {
+        var copy = details
+        copy.tees.sort { a, b in
+            if a.totalYards != b.totalYards { return a.totalYards > b.totalYards }
+            return a.rating > b.rating
+        }
+        return copy
+    }
+
+    static func allCourseDetails(from data: Data) -> GHINCourseDetails? {
         guard let root = JSON.object(data), let id = JSON.int(root["CourseId"]) ?? JSON.int(root["CourseID"]) else {
             return nil
         }
@@ -385,10 +420,10 @@ public final class GHINClient {
         return GHINWire.courseHits(from: data)
     }
 
-    public func courseDetails(id: Int) async throws -> GHINCourseDetails {
+    public func courseDetails(id: Int, gender: String? = nil) async throws -> GHINCourseDetails {
         let data = try await get("/crsCourseMethods.asmx/GetCourseDetails.json",
                                  [("course_id", String(id)), ("include_altered_tees", "false")])
-        guard let details = GHINWire.courseDetails(from: data) else {
+        guard let details = GHINWire.courseDetails(from: data, gender: gender) else {
             throw HTTPError(status: 200, message: "GHIN's course details could not be read.")
         }
         return details

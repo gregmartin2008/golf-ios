@@ -33,6 +33,15 @@ struct MoreTab: View {
                             model.settings.useMeters = value
                             model.saveSettings()
                         }))
+                    Picker("Tee ratings to use", selection: Binding(
+                        get: { model.settings.gender },
+                        set: { value in
+                            model.settings.gender = value
+                            model.saveSettings()
+                        })) {
+                        Text("Men's").tag("M")
+                        Text("Women's").tag("F")
+                    }
                     HStack {
                         Text("Handicap Index, if not using GHIN")
                         Spacer()

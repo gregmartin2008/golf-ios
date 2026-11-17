@@ -250,6 +250,7 @@ final class AppModel: ObservableObject {
             if let value = golfer.lowIndex { account.lowIndex = value }
             if let value = golfer.name, !value.isEmpty { account.name = value }
             if let value = golfer.clubName, !value.isEmpty { account.clubName = value }
+            if let value = golfer.gender { settings.gender = value }
         }
         let scores = try await ghin.scores(ghinNumber: number, limit: 40)
         var changed = rounds
@@ -292,12 +293,21 @@ final class AppModel: ObservableObject {
     func ghinLink(course: Course, to hit: GHINCourseHit) async -> Course? {
         var result: Course?
         await withGHIN {
-            let details = try await self.ghin.courseDetails(id: hit.id)
+            let details = try await self.ghin.courseDetails(id: hit.id, gender: self.settings.gender)
             var updated = course
             updated.ghinCourseID = details.id
             if updated.city.isEmpty { updated.city = details.city }
             if updated.state.isEmpty { updated.state = details.state }
-            if !details.tees.isEmpty { updated.tees = details.tees }
+            if !details.tees.isEmpty {
+                // A tee that was here before keeps its identity, so rounds played from it still match.
+                var fresh = details.tees
+                for index in 0..<fresh.count {
+                    if let old = course.tees.first(where: { $0.ghinTeeSetID != nil && $0.ghinTeeSetID == fresh[index].ghinTeeSetID }) {
+                        fresh[index].id = old.id
+                    }
+                }
+                updated.tees = fresh
+            }
             // GHIN knows how many holes the course has; the map may have only some of them.
             if details.pars.count == 9 || details.pars.count == 18 { updated.resizeHoles(to: details.pars.count) }
             for index in 0..<updated.holes.count {

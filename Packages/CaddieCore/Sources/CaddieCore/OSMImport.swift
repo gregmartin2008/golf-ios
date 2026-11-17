@@ -19,8 +19,11 @@ public struct Coverage: Codable, Equatable {
     public var hasShapesButNoHoles: Bool { holesFound == 0 && (greens + fairways + bunkers) > 0 }
 
     public var summary: String {
+        if hasShapesButNoHoles {
+            return "the map has \(greens) greens, \(fairways) fairways and \(bunkers) bunkers for this course but does not say which hole is which. Open Edit hole positions and press each hole's tee and green"
+        }
         if holesFound == 0 {
-            return "No holes are mapped for this course yet. Place the tee and green for each hole by hand."
+            return "no holes are mapped for this course yet. Open Edit hole positions and press each hole's tee and green"
         }
         var parts = ["\(holesFound) holes", "\(greens) greens", "\(fairways) fairways", "\(bunkers) bunkers"]
         if water > 0 { parts.append("\(water) water") }
