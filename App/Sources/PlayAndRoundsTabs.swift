@@ -9,6 +9,7 @@ struct PlayTab: View {
     @State private var teeID: UUID?
     @State private var holeCount = 18
     @State private var startHole = 1
+    @State private var cancelling: Round?
 
     private var chosenCourse: Course? {
         model.course(courseID) ?? model.courses.first
@@ -31,6 +32,11 @@ struct PlayTab: View {
                                     .font(.footnote).foregroundStyle(.secondary)
                             }
                         }
+                        Button(role: .destructive) {
+                            cancelling = active
+                        } label: {
+                            Label("Cancel this round", systemImage: "xmark.circle")
+                        }
                     }
                 }
                 if model.courses.isEmpty {
@@ -43,6 +49,15 @@ struct PlayTab: View {
                 }
             }
             .navigationTitle("Caddie")
+            .confirmationDialog("Cancel this round? Its scores and marks will be deleted.",
+                                isPresented: Binding(get: { cancelling != nil }, set: { if !$0 { cancelling = nil } }),
+                                titleVisibility: .visible) {
+                Button("Cancel round and delete it", role: .destructive) {
+                    if let round = cancelling { model.delete(round: round) }
+                    cancelling = nil
+                }
+                Button("Keep playing", role: .cancel) { cancelling = nil }
+            }
             .navigationDestination(for: UUID.self) { id in
                 if let round = model.round(id), !round.holes.isEmpty {
                     HoleScreen(round: round)

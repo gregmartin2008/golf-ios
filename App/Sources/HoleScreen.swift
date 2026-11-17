@@ -17,6 +17,7 @@ struct HoleScreen: View {
     @State private var showPutts = false
     @State private var showQuick = false
     @State private var showSummary = false
+    @State private var confirmCancel = false
 
     init(round: Round, startIndex: Int? = nil) {
         _round = State(initialValue: round)
@@ -88,6 +89,14 @@ struct HoleScreen: View {
                 }
             }
             .modifier(NoticeLayer())
+        }
+        .confirmationDialog("Cancel this round? Its scores and marks will be deleted.", isPresented: $confirmCancel,
+                            titleVisibility: .visible) {
+            Button("Cancel round and delete it", role: .destructive) {
+                model.delete(round: round)
+                dismiss()
+            }
+            Button("Keep playing", role: .cancel) {}
         }
         .onChange(of: showSummary) { _, showing in
             // The summary can finish or change the round; pick up what it saved.
@@ -353,6 +362,8 @@ struct HoleScreen: View {
                 Button("Undo last mark", role: .destructive) { undo() }
                     .disabled(score.marks.isEmpty)
                 Button("Clear this hole", role: .destructive) { clearHole() }
+                Divider()
+                Button("Cancel this round", role: .destructive) { confirmCancel = true }
             } label: {
                 Label("More", systemImage: "ellipsis.circle")
             }
