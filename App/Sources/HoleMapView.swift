@@ -130,9 +130,11 @@ struct HoleMapView: UIViewRepresentable {
             let camera = MKMapCamera(lookingAtCenter: middle.clLocation, fromDistance: max(260, length * 2.7),
                                      pitch: 0, heading: Geo.bearing(tee, green))
             map.setCamera(camera, animated: animated)
-        } else {
+        } else if !animated {
+            // A hole with no positions yet: show the course the first time, and after that leave
+            // the map where the user has it, so placing eighteen holes does not keep jumping away.
             let camera = MKMapCamera(lookingAtCenter: fallbackCenter.clLocation, fromDistance: 1800, pitch: 0, heading: 0)
-            map.setCamera(camera, animated: animated)
+            map.setCamera(camera, animated: false)
         }
     }
 

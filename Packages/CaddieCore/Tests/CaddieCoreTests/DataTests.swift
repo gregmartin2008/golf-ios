@@ -47,7 +47,8 @@ final class OSMImportTests: XCTestCase {
         let course = result.course
         XCTAssertEqual(course.name, "Fixture Golf Club")
         XCTAssertEqual(course.osmID, "way/1")
-        XCTAssertEqual(course.holes.count, 9)
+        // One mapped hole does not make a nine-hole course.
+        XCTAssertEqual(course.holes.count, 18)
         let hole = try XCTUnwrap(course.hole(1))
         XCTAssertEqual(hole.par, 4)
         XCTAssertEqual(hole.strokeIndex, 5)
@@ -69,6 +70,51 @@ final class OSMImportTests: XCTestCase {
         // The imported outlines drive lie detection.
         XCTAssertEqual(LieDetector.lie(at: TestHole.at(north: 250), course: course, hole: 1), .fairway)
         XCTAssertEqual(LieDetector.lie(at: TestHole.at(north: 398, east: 20), course: course, hole: 1), .bunker)
+    }
+
+    func testNineHolesOnlyWhenAllNineAreMapped() {
+        var elements: [[String: Any]] = []
+        for number in 1...9 {
+            let east = Double(number) * 60
+            elements.append(OSMImportTests.way(100 + number, tags: ["golf": "hole", "ref": "\(number)", "par": "4"],
+                                               [TestHole.at(north: 0, east: east), TestHole.at(north: 300, east: east)],
+                                               closed: false))
+        }
+        let nine = try! JSONSerialization.data(withJSONObject: ["elements": elements])
+        XCTAssertEqual(OSMImport.course(from: nine, near: TestHole.tee).course.holes.count, 9)
+        elements.removeLast()
+        let eight = try! JSONSerialization.data(withJSONObject: ["elements": elements])
+        XCTAssertEqual(OSMImport.course(from: eight, near: TestHole.tee).course.holes.count, 18)
+    }
+
+    func testPlacingHolesByHandUsesMappedShapes() throws {
+        // Shapes on the map but no numbered holes, as at many private clubs.
+        var course = Course.blank(name: "Shapes only", location: TestHole.tee, holeCount: 9)
+        course.features = TestHole.features().map { CourseFeature(id: $0.id, kind: $0.kind, ring: $0.ring, hole: nil) }
+        XCTAssertTrue(Coverage.of(course).hasShapesButNoHoles)
+        course.resizeHoles(to: 18)
+        XCTAssertEqual(course.holes.map { $0.number }, Array(1...18))
+
+        course.setTee(hole: 3, at: TestHole.at(north: 2, east: 1))
+        // A press near the edge of the green still takes the green's middle.
+        course.setGreen(hole: 3, at: TestHole.at(north: 409, east: 8))
+        let hole = try XCTUnwrap(course.hole(3))
+        XCTAssertTrue(hole.isMapped)
+        XCTAssertEqual(Geo.yards(try XCTUnwrap(hole.greenCenter), TestHole.green), 0, accuracy: 0.5)
+        XCTAssertEqual(Geo.yards(TestHole.tee, try XCTUnwrap(hole.greenFront)), 388, accuracy: 2)
+        XCTAssertEqual(Geo.yards(TestHole.tee, try XCTUnwrap(hole.greenBack)), 412, accuracy: 2)
+        XCTAssertEqual(hole.line.count, 2)
+        XCTAssertTrue(course.features.allSatisfy { $0.hole == 3 })
+        XCTAssertEqual(Coverage.of(course).holesFound, 1)
+
+        // A green placed where nothing is mapped gets a typical depth.
+        course.setTee(hole: 4, at: TestHole.at(north: 0, east: 300))
+        course.setGreen(hole: 4, at: TestHole.at(north: 350, east: 300))
+        let bare = try XCTUnwrap(course.hole(4))
+        XCTAssertEqual(Geo.yards(try XCTUnwrap(bare.greenFront), try XCTUnwrap(bare.greenBack)), 28.4, accuracy: 0.5)
+
+        course.resizeHoles(to: 9)
+        XCTAssertEqual(course.holes.count, 9)
     }
 
     func testEmptyReplyGivesBlankCourse() {

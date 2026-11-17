@@ -298,6 +298,8 @@ final class AppModel: ObservableObject {
             if updated.city.isEmpty { updated.city = details.city }
             if updated.state.isEmpty { updated.state = details.state }
             if !details.tees.isEmpty { updated.tees = details.tees }
+            // GHIN knows how many holes the course has; the map may have only some of them.
+            if details.pars.count == 9 || details.pars.count == 18 { updated.resizeHoles(to: details.pars.count) }
             for index in 0..<updated.holes.count {
                 let number = updated.holes[index].number
                 if number - 1 < details.pars.count, number >= 1 {

@@ -66,7 +66,8 @@ Installing a newer `Caddie.ipa` over the old one keeps your courses and rounds.
 2. **Courses > +**: search for the course, check what the map has, add it.
 3. Open the course and tap **Link to GHIN** to bring in the tees and ratings.
 4. If any holes are missing from the map, **Edit hole positions** and long-press the tee and
-   the green for each.
+   the green for each. Pressing on a mapped green picks up its outline, and the fairways and
+   bunkers along the hole are attached to it.
 5. **Play**: choose the course and tees, **Start round**.
 
 ## How it is built

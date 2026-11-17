@@ -150,7 +150,7 @@ struct AddCourseView: View {
         Section {
             Text(course.name).font(.headline)
             StatRow(label: "Holes on the map", value: "\(coverage.holesFound) of \(course.holes.count)")
-            StatRow(label: "Greens with front and back", value: "\(coverage.holesWithGreen)")
+            StatRow(label: "Greens", value: "\(coverage.greens)")
             StatRow(label: "Fairways", value: "\(coverage.fairways)")
             StatRow(label: "Bunkers", value: "\(coverage.bunkers)")
             StatRow(label: "Water", value: "\(coverage.water)")
@@ -174,6 +174,9 @@ struct AddCourseView: View {
     }
 
     private func coverageAdvice(_ course: Course, _ coverage: Coverage) -> String {
+        if coverage.hasShapesButNoHoles {
+            return "The map has this course's greens, fairways and bunkers but not which hole is which. Add it, then under Edit hole positions press each hole's tee and green once. The shapes are then used for yardages and lies."
+        }
         if coverage.holesFound == 0 {
             return "The map has no holes for this course. You can still add it and place each tee and green yourself, which takes a few minutes."
         }
@@ -278,7 +281,16 @@ struct CourseDetailView: View {
             }
             Section {
                 StatRow(label: "Holes on the map", value: "\(coverage.holesFound) of \(course.holes.count)")
-                StatRow(label: "Fairways / bunkers / water", value: "\(coverage.fairways) / \(coverage.bunkers) / \(coverage.water)")
+                StatRow(label: "Greens / fairways / bunkers / water",
+                        value: "\(coverage.greens) / \(coverage.fairways) / \(coverage.bunkers) / \(coverage.water)")
+                Picker("Holes", selection: Binding(get: { course.holes.count <= 9 ? 9 : 18 }, set: { value in
+                    var changed = course
+                    changed.resizeHoles(to: value)
+                    model.save(course: changed)
+                })) {
+                    Text("9 holes").tag(9)
+                    Text("18 holes").tag(18)
+                }
                 NavigationLink("Edit hole positions") {
                     HoleEditorView(courseID: courseID)
                 }
@@ -355,6 +367,7 @@ struct CourseDetailView: View {
             merged.features = fresh.features
             merged.boundary = fresh.boundary
             if merged.osmID == nil { merged.osmID = fresh.osmID }
+            if fresh.holes.count > merged.holes.count { merged.resizeHoles(to: fresh.holes.count) }
             for index in 0..<merged.holes.count {
                 guard let found = fresh.hole(merged.holes[index].number), found.isMapped else { continue }
                 // Keep par and stroke index; take positions from the map.
@@ -560,7 +573,7 @@ struct HoleEditorView: View {
                         Text("Green").tag(true)
                     }
                     .pickerStyle(.segmented)
-                    Text(placingGreen ? "Long-press the middle of the green." : "Long-press the tee you play from.")
+                    Text(placingGreen ? "Long-press the green. A mapped green is picked up when you press on it." : "Long-press the tee you play from.")
                         .font(.footnote).foregroundStyle(.secondary)
                     if let hole = hole, let tee = hole.tee, let green = hole.greenCenter {
                         Text("Hole \(hole.number): \(Int(Geo.yards(tee, green).rounded())) yd tee to green")
@@ -583,40 +596,18 @@ struct HoleEditorView: View {
 
     private func place(_ point: Coordinate, on course: Course) {
         var changed = course
-        guard let position = changed.holes.firstIndex(where: { $0.number == number }) else { return }
-        var hole = changed.holes[position]
         if placingGreen {
-            hole.greenCenter = point
-            // Front and back from a green outline under the point when there is one; else a typical green.
-            var front: Coordinate?
-            var back: Coordinate?
-            if let from = hole.tee {
-                if let outline = course.features.first(where: { $0.kind == .green && Geo.contains($0.ring, point) }) {
-                    let hits = Geo.crossings(of: outline.ring, from: from, through: point)
-                    if hits.count >= 2 {
-                        front = hits.first
-                        back = hits.last
-                    }
-                }
-                if front == nil {
-                    let heading = Geo.bearing(from, point)
-                    front = Geo.destination(from: point, bearingDegrees: heading + 180, meters: 13)
-                    back = Geo.destination(from: point, bearingDegrees: heading, meters: 13)
-                }
-            }
-            hole.greenFront = front
-            hole.greenBack = back
+            changed.setGreen(hole: number, at: point)
         } else {
-            hole.tee = point
+            changed.setTee(hole: number, at: point)
         }
-        if let tee = hole.tee, let green = hole.greenCenter {
-            // A line set by hand replaces a mapped one that no longer matches.
-            if hole.line.count < 2 || Geo.meters(hole.line[0], tee) > 5 || Geo.meters(hole.line[hole.line.count - 1], green) > 25 {
-                hole.line = [tee, green]
-            }
-        }
-        changed.holes[position] = hole
         model.save(course: changed)
-        if !placingGreen { placingGreen = true }
+        if !placingGreen {
+            placingGreen = true
+        } else if changed.hole(number)?.tee != nil, changed.hole(number + 1) != nil {
+            // Tee and green are both set: move on to the next hole's tee.
+            number += 1
+            placingGreen = false
+        }
     }
 }

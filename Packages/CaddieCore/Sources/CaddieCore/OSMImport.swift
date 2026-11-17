@@ -14,6 +14,10 @@ public struct Coverage: Codable, Equatable {
 
     public init() {}
 
+    /// True when the map has outlines (greens, fairways, bunkers) but no numbered holes, so the
+    /// owner only needs to say which tee and green belong to each hole.
+    public var hasShapesButNoHoles: Bool { holesFound == 0 && (greens + fairways + bunkers) > 0 }
+
     public var summary: String {
         if holesFound == 0 {
             return "No holes are mapped for this course yet. Place the tee and green for each hole by hand."
@@ -295,7 +299,10 @@ public enum OSMImport {
 
         // Build the holes.
         let highest = holeLines.keys.max() ?? 0
-        let holeCount = highest == 0 ? 18 : (highest <= 9 ? 9 : (highest <= 18 ? 18 : highest))
+        // Nine holes only when the map has exactly holes 1 to 9. A course with a few holes mapped
+        // is far more often an eighteen-hole course that volunteers have not finished.
+        let isNine = highest == 9 && holeLines.count == 9
+        let holeCount = isNine ? 9 : max(18, highest)
         var holes: [Hole] = []
         var greenOwner: [String: Int] = [:]
         for number in 1...holeCount {
