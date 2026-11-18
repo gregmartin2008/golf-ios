@@ -1,0 +1,3 @@
+/Users/runner/work/golf-ios/golf-ios/App/Sources/CoursesTab.swift:207:65: warning: 'placemark' was deprecated in iOS 26.0: Use location, address and addressRepresentations instead
+/Users/runner/work/golf-ios/golf-ios/App/Sources/CoursesTab.swift:208:104: warning: 'placemark' was deprecated in iOS 26.0: Use location, address and addressRepresentations instead
+/Users/runner/work/golf-ios/golf-ios/App/Sources/CoursesTab.swift:208:40: warning: 'placemark' was deprecated in iOS 26.0: Use location, address and addressRepresentations instead

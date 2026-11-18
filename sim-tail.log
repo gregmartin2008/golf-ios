@@ -1,0 +1,40 @@
+    /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsnltrainingprocessor --infoplist-path /Users/runner/work/golf-ios/golf-ios/build/sim/Build/Products/Debug-iphonesimulator/Caddie.app/Info.plist --temp-dir-path /Users/runner/work/golf-ios/golf-io
+2026-11-18 18:04:48.993 appintentsnltrainingprocessor[2072:9694] Parsing options for appintentsnltrainingprocessor
+2026-11-18 18:04:48.994 appintentsnltrainingprocessor[2072:9694] Starting AppIntents SSU YAML Generation
+2026-11-18 18:04:48.998 appintentsnltrainingprocessor[2072:9694] No AppShortcuts found - Skipping.
+
+CodeSign /Users/runner/work/golf-ios/golf-ios/build/sim/Build/Products/Debug-iphonesimulator/Caddie.app/Caddie.debug.dylib (in target 'Caddie' from project 'Caddie')
+    cd /Users/runner/work/golf-ios/golf-ios
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Users/runner/work/golf-ios/golf-ios/build/sim/Build/Products/Debug-iphonesimulator/Caddie.app/Caddie.debug.dylib
+
+CodeSign /Users/runner/work/golf-ios/golf-ios/build/sim/Build/Products/Debug-iphonesimulator/Caddie.app/__preview.dylib (in target 'Caddie' from project 'Caddie')
+    cd /Users/runner/work/golf-ios/golf-ios
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Users/runner/work/golf-ios/golf-ios/build/sim/Build/Products/Debug-iphonesimulator/Caddie.app/__preview.dylib
+
+CodeSign /Users/runner/work/golf-ios/golf-ios/build/sim/Build/Products/Debug-iphonesimulator/Caddie.app (in target 'Caddie' from project 'Caddie')
+    cd /Users/runner/work/golf-ios/golf-ios
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Users/runner/work/golf-ios/golf-ios/build/sim/Build/Products/Debug-iphonesimulator/Caddie.app
+
+RegisterExecutionPolicyException /Users/runner/work/golf-ios/golf-ios/build/sim/Build/Products/Debug-iphonesimulator/Caddie.app (in target 'Caddie' from project 'Caddie')
+    cd /Users/runner/work/golf-ios/golf-ios
+    builtin-RegisterExecutionPolicyException /Users/runner/work/golf-ios/golf-ios/build/sim/Build/Products/Debug-iphonesimulator/Caddie.app
+
+Validate /Users/runner/work/golf-ios/golf-ios/build/sim/Build/Products/Debug-iphonesimulator/Caddie.app (in target 'Caddie' from project 'Caddie')
+    cd /Users/runner/work/golf-ios/golf-ios
+    builtin-validationUtility /Users/runner/work/golf-ios/golf-ios/build/sim/Build/Products/Debug-iphonesimulator/Caddie.app -shallow-bundle -infoplist-subpath Info.plist
+
+Touch /Users/runner/work/golf-ios/golf-ios/build/sim/Build/Products/Debug-iphonesimulator/Caddie.app (in target 'Caddie' from project 'Caddie')
+    cd /Users/runner/work/golf-ios/golf-ios
+    /usr/bin/touch -c /Users/runner/work/golf-ios/golf-ios/build/sim/Build/Products/Debug-iphonesimulator/Caddie.app
+
+** BUILD SUCCEEDED **
+

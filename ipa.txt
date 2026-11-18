@@ -1,0 +1,8 @@
+size: 880K
+sha256: 2ea7c68954309f148d6afe07069e3592b4e1c329c36cae1f53ce72141808f9df
+commit: 4071cb3a73d36cf8a2a50ac5afec594f991cf083
+architectures: arm64
+app.caddie.golf
+26.0
+Caddie uses your location on the course to show yardages and to mark where each shot finished.
+released
