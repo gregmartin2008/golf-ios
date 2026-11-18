@@ -1,0 +1,170 @@
+Building for debugging...
+[0/12] /Users/runner/work/golf-ios/golf-ios/Packages/CaddieCore/.build/arm64-apple-macosx/debug/CaddieCorePackageTests.derived/runner.swift
+[0/12] Write sources
+[3/12] Write caddie-check-entitlement.plist
+[3/12] Write sources
+[6/12] Write swift-version-7974D3F7F03D5E95.txt
+[8/22] Compiling CaddieCore Handicap.swift
+[9/22] Compiling CaddieCore HoleAnalyzer.swift
+[10/22] Compiling CaddieCore LieDetector.swift
+[11/22] Compiling CaddieCore Models.swift
+[12/26] Compiling CaddieCore CourseEditing.swift
+[13/26] Compiling CaddieCore DemoData.swift
+[14/26] Compiling CaddieCore GHIN.swift
+[15/26] Compiling CaddieCore Geo.swift
+[16/26] Compiling CaddieCore HTTP.swift
+[17/26] Emitting module CaddieCore
+[18/26] Compiling CaddieCore OSMImport.swift
+[19/26] Compiling CaddieCore Stats.swift
+[20/26] Compiling CaddieCore Store.swift
+[21/26] Compiling CaddieCore StrokesGained.swift
+[22/31] Emitting module caddie_check
+[23/31] Compiling caddie_check main.swift
+[23/31] Write Objects.LinkFileList
+[24/31] Linking caddie-check
+[25/31] Applying caddie-check
+[27/31] Compiling CaddieCoreTests Fixtures.swift
+[28/32] Compiling CaddieCoreTests ScoringTests.swift
+[29/32] Compiling CaddieCoreTests DataTests.swift
+[30/32] Emitting module CaddieCoreTests
+[31/34] Emitting module CaddieCorePackageTests
+[32/34] Compiling CaddieCorePackageTests runner.swift
+[32/34] Write Objects.LinkFileList
+[33/34] Linking CaddieCorePackageTests
+Build complete! (24.83s)
+Test Suite 'All tests' started at 2026-11-18 17:58:59.751.
+Test Suite 'CaddieCorePackageTests.xctest' started at 2026-11-18 17:58:59.755.
+Test Suite 'GHINTests' started at 2026-11-18 17:58:59.755.
+Test Case '-[CaddieCoreTests.GHINTests testBadPasswordGivesAMessage]' started.
+Test Case '-[CaddieCoreTests.GHINTests testBadPasswordGivesAMessage]' passed (0.004 seconds).
+Test Case '-[CaddieCoreTests.GHINTests testCourseDetails]' started.
+Test Case '-[CaddieCoreTests.GHINTests testCourseDetails]' passed (0.001 seconds).
+Test Case '-[CaddieCoreTests.GHINTests testIndexFormats]' started.
+Test Case '-[CaddieCoreTests.GHINTests testIndexFormats]' passed (0.001 seconds).
+Test Case '-[CaddieCoreTests.GHINTests testPostBody]' started.
+Test Case '-[CaddieCoreTests.GHINTests testPostBody]' passed (0.003 seconds).
+Test Case '-[CaddieCoreTests.GHINTests testSignInThenReadScores]' started.
+Test Case '-[CaddieCoreTests.GHINTests testSignInThenReadScores]' passed (0.001 seconds).
+Test Case '-[CaddieCoreTests.GHINTests testTeesAreKeptForTheGolfersGenderOnly]' started.
+Test Case '-[CaddieCoreTests.GHINTests testTeesAreKeptForTheGolfersGenderOnly]' passed (0.001 seconds).
+Test Suite 'GHINTests' passed at 2026-11-18 17:58:59.766.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.010 (0.011) seconds
+Test Suite 'GeoTests' started at 2026-11-18 17:58:59.766.
+Test Case '-[CaddieCoreTests.GeoTests testContains]' started.
+Test Case '-[CaddieCoreTests.GeoTests testContains]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.GeoTests testDistanceAndDestinationAgree]' started.
+Test Case '-[CaddieCoreTests.GeoTests testDistanceAndDestinationAgree]' passed (0.001 seconds).
+Test Case '-[CaddieCoreTests.GeoTests testDistanceToRingAndCrossings]' started.
+Test Case '-[CaddieCoreTests.GeoTests testDistanceToRingAndCrossings]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.GeoTests testSideOfLine]' started.
+Test Case '-[CaddieCoreTests.GeoTests testSideOfLine]' passed (0.000 seconds).
+Test Suite 'GeoTests' passed at 2026-11-18 17:58:59.769.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'HandicapTests' started at 2026-11-18 17:58:59.769.
+Test Case '-[CaddieCoreTests.HandicapTests testAdjustedGrossCapsABlowUpHole]' started.
+Test Case '-[CaddieCoreTests.HandicapTests testAdjustedGrossCapsABlowUpHole]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.HandicapTests testCourseHandicap]' started.
+Test Case '-[CaddieCoreTests.HandicapTests testCourseHandicap]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.HandicapTests testDifferential]' started.
+Test Case '-[CaddieCoreTests.HandicapTests testDifferential]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.HandicapTests testIndexTable]' started.
+Test Case '-[CaddieCoreTests.HandicapTests testIndexTable]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.HandicapTests testNetDoubleBogey]' started.
+Test Case '-[CaddieCoreTests.HandicapTests testNetDoubleBogey]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.HandicapTests testStrokesReceived]' started.
+Test Case '-[CaddieCoreTests.HandicapTests testStrokesReceived]' passed (0.000 seconds).
+Test Suite 'HandicapTests' passed at 2026-11-18 17:58:59.771.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'HoleAnalyzerTests' started at 2026-11-18 17:58:59.771.
+Test Case '-[CaddieCoreTests.HoleAnalyzerTests testApproachShortAndLong]' started.
+Test Case '-[CaddieCoreTests.HoleAnalyzerTests testApproachShortAndLong]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.HoleAnalyzerTests testHoledFromOffTheGreen]' started.
+Test Case '-[CaddieCoreTests.HoleAnalyzerTests testHoledFromOffTheGreen]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.HoleAnalyzerTests testMissedFairwayLeftAndRight]' started.
+Test Case '-[CaddieCoreTests.HoleAnalyzerTests testMissedFairwayLeftAndRight]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.HoleAnalyzerTests testMissedGreenUpAndDownFromBunker]' started.
+Test Case '-[CaddieCoreTests.HoleAnalyzerTests testMissedGreenUpAndDownFromBunker]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.HoleAnalyzerTests testParThreeHasNoFairway]' started.
+Test Case '-[CaddieCoreTests.HoleAnalyzerTests testParThreeHasNoFairway]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.HoleAnalyzerTests testPenaltyOffTheTee]' started.
+Test Case '-[CaddieCoreTests.HoleAnalyzerTests testPenaltyOffTheTee]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.HoleAnalyzerTests testQuickHole]' started.
+Test Case '-[CaddieCoreTests.HoleAnalyzerTests testQuickHole]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.HoleAnalyzerTests testRegulationPar]' started.
+Test Case '-[CaddieCoreTests.HoleAnalyzerTests testRegulationPar]' passed (0.000 seconds).
+Test Suite 'HoleAnalyzerTests' passed at 2026-11-18 17:58:59.773.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'LieDetectorTests' started at 2026-11-18 17:58:59.773.
+Test Case '-[CaddieCoreTests.LieDetectorTests testAnotherHolesGreenIsNotThisHolesGreen]' started.
+Test Case '-[CaddieCoreTests.LieDetectorTests testAnotherHolesGreenIsNotThisHolesGreen]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.LieDetectorTests testLies]' started.
+Test Case '-[CaddieCoreTests.LieDetectorTests testLies]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.LieDetectorTests testUnknownWhenNothingToJudgeFrom]' started.
+Test Case '-[CaddieCoreTests.LieDetectorTests testUnknownWhenNothingToJudgeFrom]' passed (0.000 seconds).
+Test Suite 'LieDetectorTests' passed at 2026-11-18 17:58:59.774.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'OSMImportTests' started at 2026-11-18 17:58:59.774.
+Test Case '-[CaddieCoreTests.OSMImportTests testBuildsCourse]' started.
+Test Case '-[CaddieCoreTests.OSMImportTests testBuildsCourse]' passed (0.002 seconds).
+Test Case '-[CaddieCoreTests.OSMImportTests testClientFallsBackToSecondServer]' started.
+Test Case '-[CaddieCoreTests.OSMImportTests testClientFallsBackToSecondServer]' passed (0.002 seconds).
+Test Case '-[CaddieCoreTests.OSMImportTests testEmptyReplyGivesBlankCourse]' started.
+Test Case '-[CaddieCoreTests.OSMImportTests testEmptyReplyGivesBlankCourse]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.OSMImportTests testHoleNumbers]' started.
+Test Case '-[CaddieCoreTests.OSMImportTests testHoleNumbers]' passed (0.001 seconds).
+Test Case '-[CaddieCoreTests.OSMImportTests testNineHolesOnlyWhenAllNineAreMapped]' started.
+Test Case '-[CaddieCoreTests.OSMImportTests testNineHolesOnlyWhenAllNineAreMapped]' passed (0.001 seconds).
+Test Case '-[CaddieCoreTests.OSMImportTests testPlacingHolesByHandUsesMappedShapes]' started.
+Test Case '-[CaddieCoreTests.OSMImportTests testPlacingHolesByHandUsesMappedShapes]' passed (0.001 seconds).
+Test Case '-[CaddieCoreTests.OSMImportTests testQueryMentionsThePoint]' started.
+Test Case '-[CaddieCoreTests.OSMImportTests testQueryMentionsThePoint]' passed (0.000 seconds).
+Test Suite 'OSMImportTests' passed at 2026-11-18 17:58:59.783.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.008 (0.009) seconds
+Test Suite 'RoundAndStatsTests' started at 2026-11-18 17:58:59.783.
+Test Case '-[CaddieCoreTests.RoundAndStatsTests testDemoRoundsAreSensible]' started.
+Test Case '-[CaddieCoreTests.RoundAndStatsTests testDemoRoundsAreSensible]' passed (0.044 seconds).
+Test Case '-[CaddieCoreTests.RoundAndStatsTests testHandMadeRoundStats]' started.
+Test Case '-[CaddieCoreTests.RoundAndStatsTests testHandMadeRoundStats]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.RoundAndStatsTests testStartNineFromTheTenth]' started.
+Test Case '-[CaddieCoreTests.RoundAndStatsTests testStartNineFromTheTenth]' passed (0.002 seconds).
+Test Suite 'RoundAndStatsTests' passed at 2026-11-18 17:58:59.830.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.046 (0.047) seconds
+Test Suite 'StoreTests' started at 2026-11-18 17:58:59.830.
+Test Case '-[CaddieCoreTests.StoreTests testBackupLeavesOutTheSignIn]' started.
+Test Case '-[CaddieCoreTests.StoreTests testBackupLeavesOutTheSignIn]' passed (0.052 seconds).
+Test Case '-[CaddieCoreTests.StoreTests testEmptyFolderGivesDefaults]' started.
+Test Case '-[CaddieCoreTests.StoreTests testEmptyFolderGivesDefaults]' passed (0.001 seconds).
+Test Case '-[CaddieCoreTests.StoreTests testOlderSettingsFileStillOpens]' started.
+Test Case '-[CaddieCoreTests.StoreTests testOlderSettingsFileStillOpens]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.StoreTests testRoundTrip]' started.
+Test Case '-[CaddieCoreTests.StoreTests testRoundTrip]' passed (0.055 seconds).
+Test Suite 'StoreTests' passed at 2026-11-18 17:58:59.939.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.108 (0.109) seconds
+Test Suite 'StrokeCountTests' started at 2026-11-18 17:58:59.939.
+Test Case '-[CaddieCoreTests.StrokeCountTests testFairwayGreenTwoPutts]' started.
+Test Case '-[CaddieCoreTests.StrokeCountTests testFairwayGreenTwoPutts]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.StrokeCountTests testIncompleteUntilPuttsOrHoledOut]' started.
+Test Case '-[CaddieCoreTests.StrokeCountTests testIncompleteUntilPuttsOrHoledOut]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.StrokeCountTests testOutOfBoundsOffTheTee]' started.
+Test Case '-[CaddieCoreTests.StrokeCountTests testOutOfBoundsOffTheTee]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.StrokeCountTests testQuickEntryWins]' started.
+Test Case '-[CaddieCoreTests.StrokeCountTests testQuickEntryWins]' passed (0.000 seconds).
+Test Suite 'StrokeCountTests' passed at 2026-11-18 17:58:59.940.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'StrokesGainedTests' started at 2026-11-18 17:58:59.940.
+Test Case '-[CaddieCoreTests.StrokesGainedTests testHoleAddsUpToExpectedMinusStrokes]' started.
+Test Case '-[CaddieCoreTests.StrokesGainedTests testHoleAddsUpToExpectedMinusStrokes]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.StrokesGainedTests testPenaltyCostsItsStroke]' started.
+Test Case '-[CaddieCoreTests.StrokesGainedTests testPenaltyCostsItsStroke]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.StrokesGainedTests testTableLookups]' started.
+Test Case '-[CaddieCoreTests.StrokesGainedTests testTableLookups]' passed (0.000 seconds).
+Test Suite 'StrokesGainedTests' passed at 2026-11-18 17:58:59.941.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'CaddieCorePackageTests.xctest' passed at 2026-11-18 17:58:59.941.
+	 Executed 48 tests, with 0 failures (0 unexpected) in 0.179 (0.186) seconds
+Test Suite 'All tests' passed at 2026-11-18 17:58:59.941.
+	 Executed 48 tests, with 0 failures (0 unexpected) in 0.179 (0.190) seconds
+◇ Test run started.
+↳ Testing Library Version: 1902
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.

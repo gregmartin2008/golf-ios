@@ -1,0 +1,30 @@
+Test Suite 'StoreTests' passed at 2026-11-18 17:58:59.939.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.108 (0.109) seconds
+Test Suite 'StrokeCountTests' started at 2026-11-18 17:58:59.939.
+Test Case '-[CaddieCoreTests.StrokeCountTests testFairwayGreenTwoPutts]' started.
+Test Case '-[CaddieCoreTests.StrokeCountTests testFairwayGreenTwoPutts]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.StrokeCountTests testIncompleteUntilPuttsOrHoledOut]' started.
+Test Case '-[CaddieCoreTests.StrokeCountTests testIncompleteUntilPuttsOrHoledOut]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.StrokeCountTests testOutOfBoundsOffTheTee]' started.
+Test Case '-[CaddieCoreTests.StrokeCountTests testOutOfBoundsOffTheTee]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.StrokeCountTests testQuickEntryWins]' started.
+Test Case '-[CaddieCoreTests.StrokeCountTests testQuickEntryWins]' passed (0.000 seconds).
+Test Suite 'StrokeCountTests' passed at 2026-11-18 17:58:59.940.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'StrokesGainedTests' started at 2026-11-18 17:58:59.940.
+Test Case '-[CaddieCoreTests.StrokesGainedTests testHoleAddsUpToExpectedMinusStrokes]' started.
+Test Case '-[CaddieCoreTests.StrokesGainedTests testHoleAddsUpToExpectedMinusStrokes]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.StrokesGainedTests testPenaltyCostsItsStroke]' started.
+Test Case '-[CaddieCoreTests.StrokesGainedTests testPenaltyCostsItsStroke]' passed (0.000 seconds).
+Test Case '-[CaddieCoreTests.StrokesGainedTests testTableLookups]' started.
+Test Case '-[CaddieCoreTests.StrokesGainedTests testTableLookups]' passed (0.000 seconds).
+Test Suite 'StrokesGainedTests' passed at 2026-11-18 17:58:59.941.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'CaddieCorePackageTests.xctest' passed at 2026-11-18 17:58:59.941.
+	 Executed 48 tests, with 0 failures (0 unexpected) in 0.179 (0.186) seconds
+Test Suite 'All tests' passed at 2026-11-18 17:58:59.941.
+	 Executed 48 tests, with 0 failures (0 unexpected) in 0.179 (0.190) seconds
+◇ Test run started.
+↳ Testing Library Version: 1902
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
