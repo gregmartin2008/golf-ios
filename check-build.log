@@ -1,0 +1,8 @@
+Building for production...
+[0/5] Write sources
+[2/5] Write swift-version-7974D3F7F03D5E95.txt
+[4/6] Compiling CaddieCore CourseEditing.swift
+[5/7] Compiling caddie_check main.swift
+[5/7] Write Objects.LinkFileList
+[6/7] Linking caddie-check
+Build of product 'caddie-check' complete! (31.51s)

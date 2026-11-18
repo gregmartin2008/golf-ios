@@ -1,0 +1,21 @@
+map contains: 13 bunker, 5 course outline, 3 fairway, 13 green, 10 hole, 1 rough, 2 tee
+hole numbers on the map: 1 1 2 3 4 5 6 7 8 9
+reply: 128673 bytes in 66.0 s; 5 course outlines nearby
+  outline way/1065983050: The Hay
+  outline way/36435651: Cypress Point Golf Course
+  outline way/281477606: Spyglass Hill Golf Course
+  outline way/397895551: Monterey Peninsula Country Club - Shore Course
+  outline way/238036734: Monterey Peninsula Country Club - Dunes Course
+course: The Hay, 9 holes, par 27
+coverage: 9 holes, 10 greens, 2 fairways, 11 bunkers
+holes with tee and green: 9; with front and back of green: 9; with a fairway: 2
+  hole 1, par 3, index 1, 57 yd tee to green, green 22 yd deep, 0 fairway, 0 bunkers
+  hole 2, par 3, index 2, 109 yd tee to green, green 22 yd deep, 0 fairway, 5 bunkers
+  hole 3, par 3, index 3, 82 yd tee to green, green 27 yd deep, 0 fairway, 1 bunkers
+  hole 4, par 3, index 4, 56 yd tee to green, green 16 yd deep, 0 fairway, 0 bunkers
+  hole 5, par 3, index 5, 49 yd tee to green, green 20 yd deep, 0 fairway, 0 bunkers
+  hole 6, par 3, index 6, 72 yd tee to green, green 12 yd deep, 1 fairway, 1 bunkers
+  hole 7, par 3, index 7, 57 yd tee to green, green 15 yd deep, 0 fairway, 2 bunkers
+  hole 8, par 3, index 8, 89 yd tee to green, green 19 yd deep, 1 fairway, 1 bunkers
+  hole 9, par 3, index 9, 96 yd tee to green, green 22 yd deep, 0 fairway, 1 bunkers
+RESULT ok
