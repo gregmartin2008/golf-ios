@@ -419,7 +419,21 @@ struct HoleScreen: View {
 
     private func markHere() {
         guard let here = location.coordinate else { return }
+        if let away = yardsFromHole(here), away > 1000 {
+            // The phone is nowhere near this hole (at home, say), so its position is not the ball.
+            model.notice = "Your phone is \(Format.distance(yards: away, meters: useMeters)) \(Format.unit(useMeters)) from this hole, so Mark ball was not used. Press and hold the map where the ball is instead."
+            return
+        }
         addMark(at: here, source: .gps, accuracy: location.accuracy)
+    }
+
+    /// How far a point is from the nearest known spot on this hole; nil when nothing is mapped.
+    private func yardsFromHole(_ point: Coordinate) -> Double? {
+        var spots: [Coordinate] = []
+        if let tee = hole?.tee { spots.append(tee) }
+        if let green = hole?.greenCenter { spots.append(green) }
+        if spots.isEmpty, let center = course?.location { spots.append(center) }
+        return spots.map { Geo.yards(point, $0) }.min()
     }
 
     private func addMark(at point: Coordinate, source: MarkSource, accuracy: Double?) {
